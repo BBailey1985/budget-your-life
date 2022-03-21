@@ -25,13 +25,13 @@ request.onerror = event => console.log(event.target.errorCode);
 //check transaction function
 function checkTransaction() {
   const transaction = db.transaction(['new_budget_item'], 'readwrite');
-  const budgetObjectStore = transaction.budgetObjectStore('new_budget_item');
+  const budgetObjectStore = transaction.objectStore('new_budget_item');
   const getAll = budgetObjectStore.getAll();
 
   //once .getAll is successful
   getAll.onsuccess = () => {
     if (getAll.result.length > 0) {
-      fetch('/api/transaction', {
+      fetch('/api/transaction/bulk', {
         method: 'POST',
         body: JSON.stringify(getAll.result),
         headers: {
@@ -50,6 +50,7 @@ function checkTransaction() {
           const budgetObjectStore = transaction.objectStore('new_budget_item');
           // clear all items in your store
           budgetObjectStore.clear();
+          alert('All offline transactions have been submitted!');
         })
         .catch(err => {
           console.log(err);
